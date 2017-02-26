@@ -5,18 +5,20 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link class="font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4o00MyB-OrCcySLOK0gK43tRdKmK--Dg"></script>
-	<style>
-    	#map {
-        height: 400px;
-        width: 100%;
-    	}
-    </style>
+	<link href="css/style.css" rel="stylesheet">
 	<title>Neighborhood Map</title>
 </head>
 <body>
-	<ul id="loc-list" data-bind="foreach: locList">
-		<li data-bind="text: name, click: $root.toggleVisibility"></li>
+	<ul class="topnav" id="myTopnav">
+		<h3>Locations:</h3>
+	<!-- ko if: showList -->
+		<!-- ko foreach: locList -->
+			<li class="loc-list" data-bind="text: name, click: $root.clickLocation"></li>
+		<!-- /ko -->
+	<!-- /ko -->
+		<a id="icon" href="javascript:void(0);" data-bind="click: openCloseList">&#9776;</a>
 	</ul>
+	<button data-bind="click: $root.clearSelection">Clear selection</button>
 
 	<input data-bind="textInput: filter">
 	<div id="info"></div>

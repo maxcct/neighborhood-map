@@ -1,0 +1,23 @@
+#map {
+    height: 800px;
+    width: 100%;
+}
+
+.loc-list {
+	display: inline;
+	float: left;
+}
+
+li + li {
+	margin-left: 20px;
+}
+
+#icon {
+	float: right;
+}
+
+button, input {
+	display: block;
+	margin: 0 auto;
+	clear: both;
+}
