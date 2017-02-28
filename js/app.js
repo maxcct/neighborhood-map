@@ -1,19 +1,58 @@
 var initialLocs = [
-	{id: "1", name: "Roma Norte", coords: {lat: 19.417910, lng: -99.161575}, visible: true,
-	wikiName: "Colonia Roma", keywords: ["roma", "norte", "colonia", "cuauhtémoc", "cuauhtemoc"]},
-	{id: "2", name: "Chapultepec", coords: {lat: 19.419851, lng: -99.186111}, visible: true,
-	wikiName: "Chapultepec", keywords: ["chapultepec", "bosque", "forest", "park"]},
-	{id: "3", name: "Arena México", coords: {lat: 19.424507, lng: -99.152091}, visible: true,
-	wikiName: "Arena México", keywords: ["arena", "lucha", "libre", "wrestling"]},
-	{id: "4", name: "National Museum of Anthropology", coords: {lat: 19.426001, lng: -99.186462}, visible: true,
-	wikiName: "National Museum of Anthropology (Mexico)", keywords: ["museo", "museum", "antropología", "antropologia", "anthropology"]},
-	{id: "5", name: "Condesa", coords: {lat: 19.415189, lng: -99.175612}, visible: true,
-	wikiName: "Condesa", keywords: ["condesa", "colonia", "cuauhtémoc", "cuauhtemoc", "hipódromo", "hipodromo"]},
-	{id: "6", name: "Zócalo", coords: {lat: 19.432606, lng: -99.133180}, visible: true,
-	wikiName: "Zócalo", keywords: ["zócalo", "zocalo", "plaza", "centro", "center", "centre", "constitución", "constitucion"]},
-	{id: "7", name: "Zona Rosa", coords: {lat: 19.425653, lng: -99.163658}, visible: true,
-	wikiName: "Zona Rosa, Mexico City", keywords: ["zona", "rosa", "colonia", "juárez", "juarez", "gay", "korean", "korea"]}
+	{id: "1",
+	name: "Roma Norte",
+	coords: {lat: 19.417910, lng: -99.161575},
+	visible: true,
+	wikiName: "Colonia Roma",
+	keywords: ["roma", "norte", "colonia", "cuauhtémoc", "cuauhtemoc"]},
+	
+	{id: "2",
+	name: "Chapultepec",
+	coords: {lat: 19.419851, lng: -99.186111},
+	visible: true,
+	wikiName: "Chapultepec",
+	keywords: ["chapultepec", "bosque", "forest", "park"]},
+	
+	{id: "3",
+	name: "Arena México",
+	coords: {lat: 19.424507, lng: -99.152091},
+	visible: true,
+	wikiName: "Arena México",
+	keywords: ["arena", "lucha", "libre", "wrestling"]},
+	
+	{id: "4",
+	name: "National Museum of Anthropology",
+	coords: {lat: 19.426001, lng: -99.186462},
+	visible: true,
+	wikiName: "National Museum of Anthropology (Mexico)",
+	keywords: ["museo", "museum", "antropología", "antropologia",
+			   "anthropology"]},
+	
+	{id: "5",
+	name: "Condesa",
+	coords: {lat: 19.415189, lng: -99.175612},
+	visible: true,
+	wikiName: "Condesa",
+	keywords: ["condesa", "colonia", "cuauhtémoc", "cuauhtemoc",
+			   "hipódromo", "hipodromo"]},
+	
+	{id: "6",
+	name: "Zócalo",
+	coords: {lat: 19.432606, lng: -99.133180},
+	visible: true,
+	wikiName: "Zócalo",
+	keywords: ["zócalo", "zocalo", "plaza", "centro", "center", "centre",
+			   "constitución", "constitucion"]},
+	
+	{id: "7",
+	name: "Zona Rosa",
+	coords: {lat: 19.425653, lng: -99.163658},
+	visible: true,
+	wikiName: "Zona Rosa, Mexico City",
+	keywords: ["zona", "rosa", "colonia", "juárez", "juarez", "gay",
+			   "korean", "korea"]}
 ];
+
 
 var Location = function(loc) {
 	var self = this;
@@ -29,23 +68,15 @@ var Location = function(loc) {
 var ViewModel = function() {
 	var self = this;
 	this.map = ko.observable();
-
 	this.locList = ko.observableArray([]);
-
 	initialLocs.forEach(function(loc) {
 		self.locList.push(new Location(loc));
 	})
-
 	this.centerLoc = ko.observable(this.locList()[0]);
-
 	this.markers = ko.observableArray([]);
-
 	this.infoWindows = ko.observableArray([]);
-
 	this.filter = ko.observable("");
-
 	this.showList = ko.observable(true);
-
 	this.infoText = ko.observable("");
 
 	var apiCall = function(loc) {
@@ -57,9 +88,11 @@ var ViewModel = function() {
 
 		$.ajax({url: wikiRequestURL, dataType: 'jsonp'}).done(function(response) {
 			$("#info").css("display", "block");
-			pageURL = "https://en.wikipedia.org/?curid=" + response.query.pages[0].pageid;
+			pageURL = ("https://en.wikipedia.org/?curid=" +
+					  response.query.pages[0].pageid);
 			$("#info").text(response.query.pages[0].extract);
-			$("#info").append("<br><br><span id='wiki-link'>INFORMATION FROM <a href='" + pageURL + "'>WIKIPEDIA</a></span>");
+			$("#info").append("<br><br><span id='wiki'>INFORMATION FROM <a " +
+							  "href='" + pageURL + "'>WIKIPEDIA</a></span>");
 			clearTimeout(wikiRequestTimeout);
 		});
 	};
@@ -114,7 +147,8 @@ var ViewModel = function() {
 	self.clickLocation = function(loc) {
 		self.markers().forEach(function(marker) {
 			if (marker.id === loc.id()) {
-				center = new google.maps.LatLng(loc.coords().lat, loc.coords().lng);
+				center = new google.maps.LatLng(loc.coords().lat,
+												loc.coords().lng);
 				self.map.panTo(center);
 				marker.setAnimation(google.maps.Animation.BOUNCE);
 				apiCall(loc);
