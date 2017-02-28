@@ -46,16 +46,21 @@ var ViewModel = function() {
 
 	this.showList = ko.observable(true);
 
+	this.infoText = ko.observable("");
+
 	var apiCall = function(loc) {
 		var wikiRequestURL = ("https://en.wikipedia.org/w/api.php?format=json&formatversion=2&action=query&prop=extracts&exintro=&explaintext=&titles=" +
 						  	  loc.wikiName() + "&callback=wikiCallback");
 		var wikiRequestTimeout = setTimeout(function() {
-			$("#info").text('Failed to obtain Wikipedia links')
+			$("#info").text('Failed to obtain Wikipedia links');
 		}, 8000);
 
 		$.ajax({url: wikiRequestURL, dataType: 'jsonp'}).done(function(response) {
-			$("#info").text(response.query.pages[0].extract)
-			clearTimeout(wikiRequestTimeout)
+			$("#info").css("display", "block");
+			pageURL = "https://en.wikipedia.org/?curid=" + response.query.pages[0].pageid;
+			$("#info").text(response.query.pages[0].extract);
+			$("#info").append("<br><br><span id='wiki-link'>INFORMATION FROM <a href='" + pageURL + "'>WIKIPEDIA</a></span>");
+			clearTimeout(wikiRequestTimeout);
 		});
 	};
 
@@ -75,17 +80,18 @@ var ViewModel = function() {
 		    var infowindow = new google.maps.InfoWindow({
 			    content: loc.name()
 			});
-			marker.addListener('click', function() {
-				infowindow.open(map, marker);
-				self.infoWindows.push(infowindow);
-				apiCall(loc);
-			});
+			marker.addListener('click', (function(marker, infowindow) {
+				return function() {
+					infowindow.open(map, marker);
+					self.infoWindows.push(infowindow);
+					apiCall(loc);
+				}
+			})(marker, infowindow));
 		});
 	})(self);
 
 	self.filterMatchKeyword = function(keyword) {
 		filter = self.filter().toLowerCase();
-		console.log(filter)
 		return filter === keyword;
 	};
 
@@ -108,7 +114,6 @@ var ViewModel = function() {
 	self.clickLocation = function(loc) {
 		self.markers().forEach(function(marker) {
 			if (marker.id === loc.id()) {
-				console.log(self.map.center)
 				center = new google.maps.LatLng(loc.coords().lat, loc.coords().lng);
 				self.map.panTo(center);
 				marker.setAnimation(google.maps.Animation.BOUNCE);
@@ -122,15 +127,15 @@ var ViewModel = function() {
 	self.clearSelection = function(loc) {
 		self.markers().forEach(function(marker) {
 			marker.setAnimation(null);
-			$("#info").text("");
 		});
 		self.infoWindows().forEach(function(infoWindow) {
 			infoWindow.close();
-			$("#info").text("");
 		});
 		self.locList().forEach(function(loc) {
 			loc.visible(true);
 		});
+		$("#info").text("");
+		$("#info").css("display", "none");
 	};
 
 	self.updateMarkers = ko.computed(function() {

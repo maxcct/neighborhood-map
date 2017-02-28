@@ -9,18 +9,22 @@
 	<title>Neighborhood Map</title>
 </head>
 <body>
-	<ul class="topnav" id="myTopnav">
-		<h3>Locations:</h3>
-	<!-- ko if: showList -->
-		<!-- ko foreach: locList -->
-			<li class="loc-list" data-bind="text: name, click: $root.clickLocation"></li>
-		<!-- /ko -->
-	<!-- /ko -->
+	<div id="top">
+		<h3 data-bind="ifnot: showList">L O C A T I O N S</h3>
 		<a id="icon" href="javascript:void(0);" data-bind="click: openCloseList">&#9776;</a>
+	</div>
+	<ul>
+		<!-- ko if: showList -->
+			<!-- ko foreach: locList -->
+				<li data-bind="text: name, click: $root.clickLocation"></li>
+			<!-- /ko -->
+		<!-- /ko -->
 	</ul>
-	<button data-bind="click: $root.clearSelection">Clear selection</button>
-
-	<input data-bind="textInput: filter">
+	<div id="tools">
+		<input data-bind="textInput: filter">
+		<button data-bind="click: $root.clearSelection">C L E A R</button>
+		<br>
+	</div>
 	<div id="info"></div>
 	<div id="map"></div>
 

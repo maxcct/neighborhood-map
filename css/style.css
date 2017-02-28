@@ -1,23 +1,108 @@
+body {
+	background-color: black;
+	font-family: Lato;
+}
+
 #map {
-    height: 800px;
+    height: 500px;
     width: 100%;
 }
 
-.loc-list {
+#top {
 	display: inline;
-	float: left;
+	color: white;
 }
 
-li + li {
-	margin-left: 20px;
+h3 {
+	float: left;
+	padding-left: 12px;
+	margin-top: -1px;
+}
+
+li {
+	color: white;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	margin-bottom: 2px;
+	cursor: pointer;
+}
+
+a {
+	text-decoration: none;
+	color: lightblue;
 }
 
 #icon {
 	float: right;
+	color: white;
+	font-weight: bold;
+	font-size: 2em;
+	margin-top: -15px;
+	margin-bottom: 5px;
+	padding-right: 12px;
 }
 
-button, input {
-	display: block;
-	margin: 0 auto;
+#tools {
+	color: white;
 	clear: both;
+	padding: 0 10px;
+	margin-bottom: 20px;
+}
+
+button {
+	float: right;
+	height: 26px;
+	font-weight: bolder;
+	font-size: 0.7em;
+	border-radius: 5px;
+	background-color: white;
+	margin-top: 1px;
+	padding: 3px 8px;
+	cursor: pointer;
+}
+
+input {
+	float: left;
+	width: 12em;
+	height: 20px;
+	border-radius: 5px;
+	padding-left: 10px;
+	font-weight: bold;
+	font-family: Lato;
+	letter-spacing: 2px;
+}
+
+#info {
+	color: white;
+	display: none;
+	padding: 5px 15px 15px 15px;
+}
+
+#wiki-link {
+	color: white;
+	letter-spacing: 2px;
+	font-weight: bold;
+}
+
+@media only screen and (min-width: 725px) {
+	#map {
+		height: 800px;
+	}
+
+	input {
+		width: 20em;
+	}
+
+	li {
+		max-width: 40%;
+	}
+
+	#icon {
+		margin-top: -8px;
+	}
+
+	button {
+		float: left;
+		margin-left: 15px;
+	}
 }
