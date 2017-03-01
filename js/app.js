@@ -1,60 +1,7 @@
-var initialLocs = [
-	{id: "1",
-	name: "Roma Norte",
-	coords: {lat: 19.417910, lng: -99.161575},
-	visible: true,
-	wikiName: "Colonia Roma",
-	keywords: ["roma", "norte", "colonia", "cuauhtémoc", "cuauhtemoc"]},
-	
-	{id: "2",
-	name: "Chapultepec",
-	coords: {lat: 19.419851, lng: -99.186111},
-	visible: true,
-	wikiName: "Chapultepec",
-	keywords: ["chapultepec", "bosque", "forest", "park"]},
-	
-	{id: "3",
-	name: "Arena México",
-	coords: {lat: 19.424507, lng: -99.152091},
-	visible: true,
-	wikiName: "Arena México",
-	keywords: ["arena", "lucha", "libre", "wrestling"]},
-	
-	{id: "4",
-	name: "National Museum of Anthropology",
-	coords: {lat: 19.426001, lng: -99.186462},
-	visible: true,
-	wikiName: "National Museum of Anthropology (Mexico)",
-	keywords: ["museo", "museum", "antropología", "antropologia",
-			   "anthropology"]},
-	
-	{id: "5",
-	name: "Condesa",
-	coords: {lat: 19.415189, lng: -99.175612},
-	visible: true,
-	wikiName: "Condesa",
-	keywords: ["condesa", "colonia", "cuauhtémoc", "cuauhtemoc",
-			   "hipódromo", "hipodromo"]},
-	
-	{id: "6",
-	name: "Zócalo",
-	coords: {lat: 19.432606, lng: -99.133180},
-	visible: true,
-	wikiName: "Zócalo",
-	keywords: ["zócalo", "zocalo", "plaza", "centro", "center", "centre",
-			   "constitución", "constitucion"]},
-	
-	{id: "7",
-	name: "Zona Rosa",
-	coords: {lat: 19.425653, lng: -99.163658},
-	visible: true,
-	wikiName: "Zona Rosa, Mexico City",
-	keywords: ["zona", "rosa", "colonia", "juárez", "juarez", "gay",
-			   "korean", "korea"]}
-];
-
-
 var Location = function(loc) {
+   /**
+	* Initialies Location objects
+	*/
 	var self = this;
 	this.name = ko.observable(loc.name);
 	this.coords = ko.observable(loc.coords);
@@ -62,14 +9,18 @@ var Location = function(loc) {
 	this.id = ko.observable(loc.id);
 	this.wikiName = ko.observable(loc.wikiName);
 	this.keywords = ko.observableArray(loc.keywords);
+	this.icon = ko.observable(loc.icon);
 };
 
 
 var ViewModel = function() {
+   /**
+	* Initialies ViewModel properties
+	*/
 	var self = this;
 	this.map = ko.observable();
 	this.locList = ko.observableArray([]);
-	initialLocs.forEach(function(loc) {
+	locCollection.forEach(function(loc) {
 		self.locList.push(new Location(loc));
 	})
 	this.centerLoc = ko.observable(this.locList()[0]);
@@ -80,7 +31,13 @@ var ViewModel = function() {
 	this.infoText = ko.observable("");
 
 	var apiCall = function(loc) {
-		var wikiRequestURL = ("https://en.wikipedia.org/w/api.php?format=json&formatversion=2&action=query&prop=extracts&exintro=&explaintext=&titles=" +
+   /**
+	* Sends AJAX request to Wikipedia API and displays resultant info.
+	* @loc {Object} Location for which info is being requested.
+	*/
+		var wikiRequestURL = ("https://en.wikipedia.org/w/api.php?format=" +
+							  "json&formatversion=2&action=query&prop=extracts" +
+							  "&exintro=&explaintext=&titles=" +
 						  	  loc.wikiName() + "&callback=wikiCallback");
 		var wikiRequestTimeout = setTimeout(function() {
 			$("#info").text('Failed to obtain Wikipedia links');
@@ -98,13 +55,18 @@ var ViewModel = function() {
 	};
 
 	var initMap = (function() {
-	    	self.map = new google.maps.Map(document.getElementById('map'), {
+   /**
+	* Initialises Google map, markers and info windows.
+	* Adds event listener to markers.
+	*/
+	    self.map = new google.maps.Map(document.getElementById("map"), {
 	    	zoom: 14,
 	    	center: self.centerLoc().coords()
 	    });
 	    self.locList().forEach(function(loc) {
 		    var marker = new google.maps.Marker({
 		    	position: loc.coords(),
+		    	icon: loc.icon()
 		    });
 		    marker.id = loc.id();
 		    self.markers.push(marker);
@@ -124,12 +86,22 @@ var ViewModel = function() {
 	})(self);
 
 	self.filterMatchKeyword = function(keyword) {
+   /**
+	* Determines whether current filter term matches a given keyword.
+	* @keyword {String} Keyword provided iteratively from loc.keywords
+	* @return {Boolean}
+	*/
 		filter = self.filter().toLowerCase();
 		return filter === keyword;
 	};
 
 	self.filterMarkers = ko.computed(function() {
+   /**
+	* Hides markers and location <li>s that correspond with Location objects
+	* that do not have the current filter term among their keywords.
+	*/
 		if (self.filter() !== '') {
+			$("#info").text("");
 			self.locList().forEach(function(loc) {
 				if (!loc.keywords().some(self.filterMatchKeyword)) {
 					loc.visible(false);
@@ -145,6 +117,11 @@ var ViewModel = function() {
 	}, self);
 
 	self.clickLocation = function(loc) {
+   /**
+	* Centers map on selected location, causes the corresponding marker to
+	* bounce, and initiates an API call.
+	* @loc {Object} Location that has been clicked on in the list.
+	*/
 		self.markers().forEach(function(marker) {
 			if (marker.id === loc.id()) {
 				center = new google.maps.LatLng(loc.coords().lat,
@@ -158,7 +135,11 @@ var ViewModel = function() {
 		});
 	};
 
-	self.clearSelection = function(loc) {
+	self.clearSelection = function() {
+   /**
+	* Clears all marker animations, closes all info windows, sets all location
+	* 'visible' properties to true, clears Wikipedia info and resets filter.
+	*/
 		self.markers().forEach(function(marker) {
 			marker.setAnimation(null);
 		});
@@ -170,9 +151,13 @@ var ViewModel = function() {
 		});
 		$("#info").text("");
 		$("#info").css("display", "none");
+		self.filter("");
 	};
 
 	self.updateMarkers = ko.computed(function() {
+   /**
+	* Hides markers that have been filtered out and displays the rest.
+	*/
 		self.locList().forEach(function(loc) {
 	    	if (loc.visible()) {
 				self.markers().forEach(function(marker) {
@@ -194,5 +179,20 @@ var ViewModel = function() {
 		self.showList() ? self.showList(false) : !self.showList(true);
 	}
 }
+
+
+var autocompleteWords = ["roma", "norte", "colonia", "cuauhtémoc",
+						 "chapultepec", "bosque", "forest", "park", "arena",
+						 "lucha", "libre", "wrestling", "museo", "museum",
+						 "antropología", "anthropology", "condesa",
+						 "hipódromo", "zócalo", "plaza", "centro", "centre",
+						 "constitución", "zona", "rosa", "juárez", "gay",
+						 "korea"]
+
+$("input").autocomplete({
+	source: autocompleteWords,
+	appendTo: "#autocomplete"
+});
+
 
 ko.applyBindings(new ViewModel());

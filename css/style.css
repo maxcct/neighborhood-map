@@ -19,17 +19,26 @@ h3 {
 	margin-top: -1px;
 }
 
-li {
+#location {
 	color: white;
 	text-transform: uppercase;
 	letter-spacing: 2px;
 	margin-bottom: 2px;
 	cursor: pointer;
+	padding-top: 5px;
 }
 
 a {
 	text-decoration: none;
 	color: lightblue;
+}
+
+li:first-child {
+	padding-top: 10px;
+}
+
+li {
+	color: white;
 }
 
 #icon {
@@ -82,6 +91,11 @@ input {
 	color: white;
 	letter-spacing: 2px;
 	font-weight: bold;
+}
+
+#autocomplete {
+	display: block;
+	clear: both;
 }
 
 @media only screen and (min-width: 725px) {
