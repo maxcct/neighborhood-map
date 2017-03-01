@@ -181,19 +181,22 @@ var initMap = function() {
 		self.openCloseList = function() {
 			self.showList() ? self.showList(false) : !self.showList(true);
 		};
+		self.autocompleteWords = ['roma', 'norte', 'colonia', 'cuauhtémoc',
+								  'chapultepec', 'bosque', 'forest', 'park',
+								  'arena', 'lucha', 'libre', 'wrestling',
+								  'museo', 'museum', 'antropología',
+								  'anthropology', 'condesa', 'hipódromo',
+								  'zócalo', 'plaza', 'centro', 'centre',
+								  'constitución', 'zona', 'rosa', 'juárez',
+								  'gay', 'korea'];
+
+		$('input').autocomplete({
+			source: self.autocompleteWords,
+			appendTo: '#autocomplete',
+			select: function( event, ui ) {
+				self.filter(ui.item.value);
+			}
+		});
 	};
 	ko.applyBindings(new ViewModel());
 };
-
-var autocompleteWords = ['roma', 'norte', 'colonia', 'cuauhtémoc',
-						 'chapultepec', 'bosque', 'forest', 'park', 'arena',
-						 'lucha', 'libre', 'wrestling', 'museo', 'museum',
-						 'antropología', 'anthropology', 'condesa',
-						 'hipódromo', 'zócalo', 'plaza', 'centro', 'centre',
-						 'constitución', 'zona', 'rosa', 'juárez', 'gay',
-						 'korea'];
-
-$('input').autocomplete({
-	source: autocompleteWords,
-	appendTo: '#autocomplete'
-});
