@@ -83,8 +83,11 @@ input {
 
 #info {
 	color: white;
-	display: none;
 	padding: 5px 15px 15px 15px;
+}
+
+#info:empty {
+	display: none;
 }
 
 #wiki {
