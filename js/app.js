@@ -200,3 +200,7 @@ var initMap = function() {
 	};
 	ko.applyBindings(new ViewModel());
 };
+
+var mapFail = function() {
+	$('#map').html("<br><br>Failed to load map. Please try refreshing the page.");
+}
