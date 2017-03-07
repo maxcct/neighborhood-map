@@ -102,6 +102,10 @@ input {
 	clear: both;
 }
 
+.gm-style-iw {
+	color: black;
+}
+
 @media only screen and (min-width: 725px) {
 	#map {
 		height: 800px;

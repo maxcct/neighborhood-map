@@ -73,10 +73,6 @@ var initMap = function() {
 			    marker.id = loc.id;
 			    self.markers.push(marker);
 			    marker.setMap(self.map);
-
-			    var infowindow = new google.maps.InfoWindow({
-				    content: loc.name
-				});
 				marker.addListener('click', (function(marker, infowindow) {
 					return function() {
 						infowindow.setContent(loc.name);
